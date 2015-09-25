@@ -109,7 +109,6 @@ var brokenAuthHeaderProviders = []string{
 	"https://test-sandbox.auth.corp.google.com",
 	"https://user.gini.net/",
 	"https://api.netatmo.net/",
-	"https://api-test.mediaconnect.no/",
 }
 
 // providerAuthHeaderWorks reports whether the OAuth2 server identified by the tokenURL
@@ -140,9 +139,10 @@ func RetrieveToken(ctx context.Context, ClientID, ClientSecret, TokenURL string,
 	if err != nil {
 		return nil, err
 	}
-	v.Set("client_id", ClientID)
+
 	bustedAuth := !providerAuthHeaderWorks(TokenURL)
 	if bustedAuth && ClientSecret != "" {
+		v.Set("client_id", ClientID)
 		v.Set("client_secret", ClientSecret)
 	}
 	req, err := http.NewRequest("POST", TokenURL, strings.NewReader(v.Encode()))
