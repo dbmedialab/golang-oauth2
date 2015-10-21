@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"mime"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"strconv"
 	"strings"
@@ -153,6 +154,11 @@ func RetrieveToken(ctx context.Context, ClientID, ClientSecret, TokenURL string,
 	if !bustedAuth {
 		req.SetBasicAuth(ClientID, ClientSecret)
 	}
+
+	// dump the request to console for debug
+	dump, err := httputil.DumpRequest(req, true)
+	fmt.Println("Request:", string(dump[:]))
+
 	r, err := hc.Do(req)
 	if err != nil {
 		return nil, err
